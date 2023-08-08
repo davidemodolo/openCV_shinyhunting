@@ -44,7 +44,7 @@ def computer_vision(reset_count):
     # cv2.imshow('screenshot', screenshot)
     # cv2.waitKey(0)
     # cv2.imshow('shiny', shiny_png)
-    # cv2.waitKey(0)
+    # cv2.waitKey(0)nrnx
     # exit()
     # looking for the shiny
     result = cv2.matchTemplate(screenshot, shiny_png, cv2.TM_CCOEFF_NORMED)
@@ -53,7 +53,9 @@ def computer_vision(reset_count):
 
     # max_val = max percentage of similarity
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-    print('matching ' + str(round(max_val*100, 2)) + '%')
+    # pokemon = split over ., take the first part and split over _ take the first part
+    pokemon = values.SHINY_PATH.split('.')[0].split('_')[0]
+    print(f'\nmatching {pokemon} ' + str(round(max_val*100, 2)) + '%')
     print('matching poochyena ' + str(round(max_val_p*100, 2)) + '%')
     # format the screenshot in order to save it anyway
     new_p = Image.fromarray(save_screenshot)
