@@ -124,6 +124,10 @@ def main():
     keyboard.press(key)
     time.sleep(0.1)
     keyboard.release(key)
+    key = '1'
+    keyboard.press(key)
+    time.sleep(0.1)
+    keyboard.release(key)
     print('SHINY after ' + str(resets_count) + ' soft resets')
 
 
