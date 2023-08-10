@@ -1,6 +1,5 @@
 # ------------------------------------
 # TODO:
-# - shiny file RGB and not BRG
 # - normalize dimension
 # - check only on the emulator window
 # ------------------------------------
@@ -22,17 +21,18 @@ keyboard = Controller()
 commands = {
     'leafgreen':{
         'squirtle': "rnxxxxnxxxxxxxxxxnznxnxexxxn",
-        'charmander': "rnxxxxnxxxxxxxxxzznznxnxexxxn"
+        'charmander': "rnxxxxnxxxxxxxxxzznznxnxexxxn" # 293
     },
     'sapphire':{
-        'mudkip': "rnxxxxxdxxnxn"
+        'mudkip': "rnxxxxxdxxnxn" # 8445
     }
 }
 
 LONGER_DELAY = 'n'
 EMU_SPEED = 10
-GAME = 'sapphire'
-POKEMON = 'mudkip'
+GAME = 'leafgreen'
+POKEMON = 'charmander'
+POOCHYENA = False
 SAVESTATE = '1'
 PAUSE = 'p'
 PROBABILITY = 8196
@@ -41,7 +41,7 @@ THRESHOLD = 0.99
 shiny_png = np.array(cv2.imread(values.SHINY_PATH, cv2.IMREAD_UNCHANGED))
 shiny_png = cv2.cvtColor(shiny_png, cv2.COLOR_BGRA2BGR)
 
-POOCHYENA = True
+
 if POOCHYENA:
     poochyena = np.array(cv2.imread("poochyena_sapphire.png", cv2.IMREAD_UNCHANGED))
     poochyena = cv2.cvtColor(poochyena, cv2.COLOR_BGRA2BGR)
@@ -92,7 +92,7 @@ def main():
     resets_count = int(file_resets.read())
     file_resets.close()
     while(computer_vision(resets_count)):
-        time.sleep(2)
+        time.sleep(1)
         redo()
         resets_count = resets_count + 1
         file_resets = open(path, "w")
