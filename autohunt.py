@@ -21,7 +21,8 @@ keyboard = Controller()
 commands = {
     'leafgreen':{
         'squirtle': "rnxxxxnxxxxxxxxxxnznxnxexxxn",
-        'charmander': "rnxxxxnxxxxxxxxxzznznxnxexxxn" # 293
+        'charmander': "rnxxxxnxxxxxxxxxzznznxnxexxxn", # 4019
+        'dratini': "rnxxxxxxxzzzxxsssxxzzesxsssssxxn" # 4019
     },
     'sapphire':{
         'mudkip': "rnxxxxxdxxnxn" # 8445
@@ -29,9 +30,9 @@ commands = {
 }
 
 LONGER_DELAY = 'n'
-EMU_SPEED = 10
+EMU_SPEED = 5
 GAME = 'leafgreen'
-POKEMON = 'charmander'
+POKEMON = 'dratini'
 POOCHYENA = False
 SAVESTATE = '1'
 PAUSE = 'p'
@@ -47,7 +48,7 @@ if POOCHYENA:
     poochyena = cv2.cvtColor(poochyena, cv2.COLOR_BGRA2BGR)
 
 def computer_vision(reset_count):
-    screen = ImageGrab.grab()
+    screen = ImageGrab.grab(all_screens=True)
     screenshot = np.array(screen)
     screenshot_to_send = Image.fromarray(screenshot)
 
@@ -77,6 +78,7 @@ def computer_vision(reset_count):
 def redo():
     for cr in commands[GAME][POKEMON]:
         key = str(cr)
+        # print(key)
         if not (key == LONGER_DELAY):
             time.sleep(1/EMU_SPEED)
         else:
@@ -97,9 +99,13 @@ def main():
         resets_count = resets_count + 1
         file_resets = open(path, "w")
         file_resets.write(str(resets_count))
+        file_resets.close()
         print(str(resets_count) + " resets: " +
               str(round((resets_count*100/PROBABILITY), 3))+"% to find a shiny")
-
+    resets_count = resets_count + 1
+    file_resets = open(path, "w")
+    file_resets.write(str(resets_count))
+    file_resets.close()
     keyboard.press(PAUSE)
     time.sleep(0.1)
     keyboard.release(PAUSE)
