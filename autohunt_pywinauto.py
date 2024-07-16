@@ -10,19 +10,18 @@ from PIL import Image
 from PIL import ImageGrab
 import numpy as np
 import cv2
-from pynput.keyboard import Controller
 import time
+from pywinauto.application import Application
 # import values for paths and token from values.py in the same folder
 import values
 #initialize
 bot = telepot.Bot(values.TOKEN) # to receive the photo on telegram when a shiny is found
-keyboard = Controller()
 
 commands = {
     'leafgreen':{
-        'squirtle': "rnxxxxnxxxxxxxxxxnznxnxexxxn", # FOUND AFTER 2848
+        'squirtle': "rnxxxxnxxxxxxxxxxnznxnxexxxn",
         'charmander': "rnxxxxnxxxxxxxxxzznznxnxexxxn", # 4019
-        'dratini': "rnxxxxxxxzzzxxsssxxzzesxxxnsn" # FOUND AFTER 11368
+        'dratini': "rnxxxxxxzzzzzxxxxxsssxxzzzzesxxxnsn" # 856
     },
     'sapphire':{
         'mudkip': "rnxxxxxdxxnxn" # 8445
@@ -30,14 +29,14 @@ commands = {
 }
 
 LONGER_DELAY = 'n'
-EMU_SPEED = 34
+EMU_SPEED = 10
 GAME = 'leafgreen'
 POKEMON = 'dratini'
 POOCHYENA = False
 SAVESTATE = '1'
 PAUSE = 'p'
 PROBABILITY = 8196
-THRESHOLD = 0.999
+THRESHOLD = 0.99
 
 shiny_png = np.array(cv2.imread(values.SHINY_PATH, cv2.IMREAD_UNCHANGED))
 shiny_png = cv2.cvtColor(shiny_png, cv2.COLOR_BGRA2BGR)
@@ -75,27 +74,29 @@ def computer_vision(reset_count):
         return False
 
 
-def redo():
+def redo(emulator_window):
     for cr in commands[GAME][POKEMON]:
         key = str(cr)
-        # print(key)
+        print(key)
         if not (key == LONGER_DELAY):
             time.sleep(1/EMU_SPEED)
         else:
-            time.sleep(5/EMU_SPEED)
-        keyboard.press(key)
-        time.sleep(0.1)
-        keyboard.release(key)
-
+            time.sleep(6/EMU_SPEED)
+        emulator_window.send_keystrokes(f"{"".join([key for _ in range(1)])}")
+import re
 def main():
-    time.sleep(5)
+    title_re = re.compile("mGBA - Pokemon - Versione")
+    app = Application().connect(title_re=title_re)
+    emulator_window = app.window(title_re=title_re)
+
+    time.sleep(1)
     path = values.RESETS_PATH
     file_resets = open(path, "r")
     resets_count = int(file_resets.read())
     file_resets.close()
     while(computer_vision(resets_count)):
         time.sleep(1)
-        redo()
+        redo(emulator_window)
         resets_count = resets_count + 1
         file_resets = open(path, "w")
         file_resets.write(str(resets_count))
@@ -106,12 +107,9 @@ def main():
     file_resets = open(path, "w")
     file_resets.write(str(resets_count))
     file_resets.close()
-    keyboard.press(PAUSE)
-    time.sleep(0.1)
-    keyboard.release(PAUSE)
-    keyboard.press(SAVESTATE)
-    time.sleep(0.1)
-    keyboard.release(SAVESTATE)
+    emulator_window.send_keystrokes(f"{"".join([PAUSE for _ in range(6)])}")
+    time.sleep(0.5)
+    emulator_window.send_keystrokes(f"{"".join([SAVESTATE for _ in range(6)])}")
     print('SHINY after ' + str(resets_count) + ' soft resets')
 
 
