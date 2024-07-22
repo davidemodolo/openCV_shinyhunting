@@ -21,7 +21,7 @@ keyboard = Controller()
 commands = {
     'leafgreen':{
         'squirtle': "rnxxxxnxxxxxxxxxxnznxnxexxxn", # FOUND AFTER 2848
-        'charmander': "rnxxxxnxxxxxxxxxzznznxnxexxxn", # 4019
+        'charmander': "rnxxxxxnxxxxzznzznxnexxxn", # 4023
         'dratini': "rnxxxxxxxzzzxxsssxxzzesxxxnsn" # FOUND AFTER 11368
     },
     'sapphire':{
@@ -30,13 +30,13 @@ commands = {
 }
 
 LONGER_DELAY = 'n'
-EMU_SPEED = 34
+EMU_SPEED = 29
 GAME = 'leafgreen'
-POKEMON = 'dratini'
+POKEMON = 'charmander'
 POOCHYENA = False
 SAVESTATE = '1'
 PAUSE = 'p'
-PROBABILITY = 8196
+PROBABILITY = 8192
 THRESHOLD = 0.999
 
 shiny_png = np.array(cv2.imread(values.SHINY_PATH, cv2.IMREAD_UNCHANGED))
