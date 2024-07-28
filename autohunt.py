@@ -21,8 +21,13 @@ keyboard = Controller()
 commands = {
     'leafgreen':{
         'squirtle': "rnxxxxnxxxxxxxxxxnznxnxexxxn", # FOUND AFTER 2848
-        'charmander': "rnxxxxxnxxxxzznzznxnexxxn", # 4023
-        'dratini': "rnxxxxxxxzzzxxsssxxzzesxxxnsn" # FOUND AFTER 11368
+        'charmander': "rnxxxxxnxxxxzznzznxnexxxn", # FOUND AFTER 18096
+        'dratini': "rnxxxxxxxzzzxxsssxxzzesxxxnsn", # FOUND AFTER 11368
+        'ghastly': "rnxxxnxzzn"+"wwwsss"*10+"nn", #
+    },
+    'firered':{
+        # 'bulbasaur': "rnxxxnxxzznxxxxnzzzzzzexxxn", # 
+        'bulbasaur': "rnxxxnxzxxxxxzznzzexxxn", # found after 1428
     },
     'sapphire':{
         'mudkip': "rnxxxxxdxxnxn" # 8445
@@ -32,7 +37,7 @@ commands = {
 LONGER_DELAY = 'n'
 EMU_SPEED = 29
 GAME = 'leafgreen'
-POKEMON = 'charmander'
+POKEMON = 'ghastly'
 POOCHYENA = False
 SAVESTATE = '1'
 PAUSE = 'p'
@@ -67,9 +72,33 @@ def computer_vision(reset_count):
     photoname = POKEMON + f"{reset_count}" +".png"
     path = values.SCREEN_PATH + photoname
 
-    if(max_val > THRESHOLD and max_val_p > THRESHOLD):
+    if(max_val > THRESHOLD and max_val_p > THRESHOLD): # it's classic
         return True
-    else:
+    else: # may be shiny
+        shiny_png_cubone = np.array(cv2.imread("cubone.png", cv2.IMREAD_UNCHANGED))
+        shiny_png_cubone = cv2.cvtColor(shiny_png_cubone, cv2.COLOR_BGRA2BGR)
+        result = cv2.matchTemplate(screenshot, shiny_png_cubone, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+        print('\nmatching Cubone ' + str(round(max_val*100, 2)) + '%')
+        if(max_val > THRESHOLD):
+            return True
+        
+        shiny_png_player = np.array(cv2.imread("player.png", cv2.IMREAD_UNCHANGED))
+        shiny_png_player = cv2.cvtColor(shiny_png_player, cv2.COLOR_BGRA2BGR)
+        result = cv2.matchTemplate(screenshot, shiny_png_player, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+        print('\nmatching Player ' + str(round(max_val*100, 2)) + '%')
+        if(max_val > THRESHOLD):
+            return True
+        
+        # same for haunter
+        shiny_png_haunter = np.array(cv2.imread("haunter.png", cv2.IMREAD_UNCHANGED))
+        shiny_png_haunter = cv2.cvtColor(shiny_png_haunter, cv2.COLOR_BGRA2BGR)
+        result = cv2.matchTemplate(screenshot, shiny_png_haunter, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+        print('\nmatching Haunter ' + str(round(max_val*100, 2)) + '%')
+        if(max_val > THRESHOLD):
+            return True
         screenshot_to_send.save(path)
         bot.sendPhoto(values.CHAT_ID, open(path, 'rb'))
         return False
